@@ -85,16 +85,6 @@ public class BackgroundLocationService extends Service implements
         }
     }
 
-    private Socket mSocket;
-    {
-        try {
-            mSocket = IO.socket("http://199.231.231.221:5000");
-            //String serverURL = PreferenceManager.getInstance().getServerIP(this);
-            //mSocket = IO.socket(serverURL);
-            updateStatus("made socket.io connection...");
-        } catch (URISyntaxException e) {}
-    }
-
     /**
      * Target we publish for clients to send messages to IncomingHandler.
      */
@@ -105,6 +95,9 @@ public class BackgroundLocationService extends Service implements
         return mMessenger.getBinder();
     }
     private BackgroundLocationService btsThis;
+    //String serverURL = "http://" + PreferenceManager.getInstance().getServerIP(btsThis);
+
+    private Socket mSocket;
 
     public void sendToClients(String message){
         Time stamp = new Time(Time.getCurrentTimezone());
@@ -175,10 +168,15 @@ public class BackgroundLocationService extends Service implements
         super.onCreate();
 
         btsThis = this;
-        System.out.println("about to do socket connect...");
+        String serverURL = "http://" + PreferenceManager.getInstance().getServerIP(btsThis);
+            try {
+                mSocket = IO.socket(serverURL);
+                updateStatus("made socket.io connection...");
+            } catch (URISyntaxException e) {}
+
         mSocket.connect();
         JSONObject data = new JSONObject();
-        //String jsonString = "";
+
         try {
             data.accumulate("id", PreferenceManager.getInstance().getTrolleyNumber(btsThis));           // get param
             data.accumulate("pw", PreferenceManager.getInstance().getPassword(btsThis)); // get param
@@ -186,8 +184,8 @@ public class BackgroundLocationService extends Service implements
             Log.e(Constants.LOG_TAG, "JSON error. " + e);
             e.printStackTrace();
         }
-        System.out.println("about to do emit");
-        Log.d(Constants.LOG_TAG, "doing emit now!");
+
+        Log.d(Constants.LOG_TAG, "emit now");
         mSocket.emit("bus:connect", data);
 
 
@@ -239,7 +237,8 @@ public class BackgroundLocationService extends Service implements
         mLocationRequest.setInterval(Constants.UPDATE_INTERVAL);
 
         if(intent.hasExtra(LocationClient.KEY_LOCATION_CHANGED)){
-            updateStatus("GPS data updated. POSTing to API...");
+            updateStatus("GPS data updated. emit location...");
+
             location = (Location)b.get(LocationClient.KEY_LOCATION_CHANGED);
             Log.d(Constants.LOG_TAG, location.getLatitude() + ", " + location.getLongitude());
 
