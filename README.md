@@ -1,11 +1,11 @@
-#HSV Transit Beacon 
+#Vehicle Beacon 
 originally 
-# trolley-tracker-agent
+# HSV Transit Beacont from trolley-tracker-agent
 
-Android app for reporting the current location of devise with this application installed.
+Android app for reporting the current location of device with this application installed.
 
 Written by the Code for Greenville NC CfA Brigade, it has been adapted to track the Huntsville 
-Trolley and Shuttle Buses by the Code for Huntsville CfA Brigade.
+Trolley and Shuttle Buses by the Code the South CfA Brigade.
 
 ## Dependencies
 - Development
@@ -18,3 +18,5 @@ Trolley and Shuttle Buses by the Code for Huntsville CfA Brigade.
 
 ## Functionality
 This app uses Google Location Services API to request high-precision location updates. When it receives a location update, the service will issue a HTTP POST to the trolley-tracker-api endpoint.
+
+## This application will need to be rewritten as the Google Play Service API has changed and has been deprecated! 
