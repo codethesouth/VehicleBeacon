@@ -17,6 +17,6 @@ Trolley and Shuttle Buses by the Code the South CfA Brigade.
  - Google Play Services (Google Location Services)
 
 ## Functionality
-This app uses Google Location Services API to request high-precision location updates. When it receives a location update, the service will issue a HTTP POST to the trolley-tracker-api endpoint.
+This app uses Google Location Services API to request high-precision location updates. This version also uses Socket.io, so when the tablet is turned on the app will try to make a connection to the server URL listed in the app settings  <code>ServerIP</code> When it receives a location update, the service will issue a <code>socket.emit()</code>.
 
-## This application will need to be rewritten as the Google Play Service API has changed and has been deprecated! 
+<b>Note: </b><i>This application will need to be rewritten as the Google Play Service API has changed and has been deprecated!</i> 
