@@ -16,12 +16,12 @@ public class PreferenceManager {
 
     public String getServerIP(Context context) {
         SharedPreferences sharedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getString(SettingsActivity.KEY_PREF_SERVER_IP, "transittracks.herokuapp.com");
+        return sharedPreferences.getString(SettingsActivity.KEY_PREF_SERVER_IP, "199.231.231.221:5000");
     }
 
     public String getTrolleyNumber(Context context) {
         SharedPreferences sharedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getString(SettingsActivity.KEY_PREF_TROLLEY_ID, "0");
+        return sharedPreferences.getString(SettingsActivity.KEY_PREF_TROLLEY_ID, "999");
     }
 
     public String getUser(Context context) {
@@ -32,7 +32,7 @@ public class PreferenceManager {
 
     public String getPassword(Context context) {
         SharedPreferences sharedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getString(SettingsActivity.KEY_PREF_PASSWORD, "");
+        return sharedPreferences.getString(SettingsActivity.KEY_PREF_PASSWORD, "change1");
     }
 
     public void setBackgroundTestsEnabled(boolean backgroundTestsEnabled, Activity activity){

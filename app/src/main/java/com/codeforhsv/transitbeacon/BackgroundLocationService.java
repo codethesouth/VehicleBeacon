@@ -16,6 +16,8 @@ import android.text.format.Time;
 import android.util.Base64;
 import android.util.Log;
 
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -35,6 +37,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -81,6 +84,17 @@ public class BackgroundLocationService extends Service implements
             }
         }
     }
+
+    private Socket mSocket;
+    {
+        try {
+            mSocket = IO.socket("http://199.231.231.221:5000");
+            //String serverURL = PreferenceManager.getInstance().getServerIP(this);
+            //mSocket = IO.socket(serverURL);
+            updateStatus("made socket.io connection...");
+        } catch (URISyntaxException e) {}
+    }
+
     /**
      * Target we publish for clients to send messages to IncomingHandler.
      */
@@ -159,7 +173,23 @@ public class BackgroundLocationService extends Service implements
     @Override
     public void onCreate() {
         super.onCreate();
+
         btsThis = this;
+        System.out.println("about to do socket connect...");
+        mSocket.connect();
+        JSONObject data = new JSONObject();
+        //String jsonString = "";
+        try {
+            data.accumulate("id", PreferenceManager.getInstance().getTrolleyNumber(btsThis));           // get param
+            data.accumulate("pw", PreferenceManager.getInstance().getPassword(btsThis)); // get param
+        } catch (Exception e) {
+            Log.e(Constants.LOG_TAG, "JSON error. " + e);
+            e.printStackTrace();
+        }
+        System.out.println("about to do emit");
+        Log.d(Constants.LOG_TAG, "doing emit now!");
+        mSocket.emit("bus:connect", data);
+
 
         Intent intent = new Intent(this, BackgroundLocationService.class);
         mLocationPendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -312,33 +342,37 @@ public class BackgroundLocationService extends Service implements
             try {
                 JSONObject jsonObject = new JSONObject();
                 String jsonString = "";
+                jsonObject.accumulate("id", trolleyId);
                 jsonObject.accumulate("lat", lat);
                 jsonObject.accumulate("lon", lng);
-                jsonString = jsonObject.toString();
+                //jsonString = jsonObject.toString();
 
-                HttpClient c = new DefaultHttpClient();
-                String URL = "http://" + server + "/api/v1/trolly/" + trolleyId + "/location";
-                HttpPost p = new HttpPost(URL);
+                mSocket.emit("bus:location",jsonObject);
 
-                StringEntity se = new StringEntity(jsonString);
-                p.setEntity(se);
-                p.setHeader("Content-Type", "application/json");
+                //HttpClient c = new DefaultHttpClient();
+                //String URL = "http://" + server + "/api/v1/trolly/" + trolleyId + "/location";
+                //HttpPost p = new HttpPost(URL);
 
-                String credentials = user + ":" + pass;
-                String base64 = Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-                p.setHeader("Authorization", "Basic " + base64);
+                //StringEntity se = new StringEntity(jsonString);
+                //p.setEntity(se);
+                //p.setHeader("Content-Type", "application/json");
 
-                HttpResponse r = c.execute(p);
+                //String credentials = user + ":" + pass;
+                //String base64 = Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+                //p.setHeader("Authorization", "Basic " + base64);
 
-                StatusLine httpResponse = r.getStatusLine();
-                String responseText = EntityUtils.toString(r.getEntity());
-                if(httpResponse.getStatusCode() == HttpStatus.SC_OK || httpResponse.getStatusCode() == HttpStatus.SC_CREATED){
-                    return "Location sent: " + lat + ", " + lng;
-                } else {
-                    Log.d(Constants.LOG_TAG, httpResponse.getStatusCode() + " " + httpResponse.getReasonPhrase());
-                    Log.d(Constants.LOG_TAG, responseText);
-                }
-                return httpResponse.getStatusCode() + " " + httpResponse.getReasonPhrase();
+                //HttpResponse r = c.execute(p);
+
+                //StatusLine httpResponse = r.getStatusLine();
+                //String responseText = EntityUtils.toString(r.getEntity());
+                //if(httpResponse.getStatusCode() == HttpStatus.SC_OK || httpResponse.getStatusCode() == HttpStatus.SC_CREATED){
+                return "Location emitted: " + lat + ", " + lng;
+                //} else {
+                //    Log.d(Constants.LOG_TAG, httpResponse.getStatusCode() + " " + httpResponse.getReasonPhrase());
+                //    Log.d(Constants.LOG_TAG, responseText);
+                //}
+                //return httpResponse.getStatusCode() + " " + httpResponse.getReasonPhrase();
+                //return "success";
             } catch (Exception e) {
                 e.printStackTrace();
             }
