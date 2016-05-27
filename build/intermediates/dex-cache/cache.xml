@@ -26,14 +26,14 @@
         jar="C:\workspace\VehicleBeacon\app\build\intermediates\incremental-runtime-classes\defaultFlavor\debug\instant-run.jar"
         jumboMode="true"
         revision="24.0.0 rc4"
-        sha1="8a8187212c3f13871f549b502d07a2b4a33678e7">
+        sha1="ec98416ca577535225508e1442a7621dd23cfb17">
         <dex dex="C:\workspace\VehicleBeacon\app\build\intermediates\transforms\dex\defaultFlavor\debug\folders\1000\10\instant-run_35791e7e7eea928ae2c99602bc011f124f5723e0\classes.dex" />
     </item>
     <item
         jar="C:\workspace\VehicleBeacon\app\build\intermediates\incremental-classes\defaultFlavor\debug\instant-run-bootstrap.jar"
         jumboMode="true"
         revision="24.0.0 rc4"
-        sha1="cba66f0725a41fcbc0501ca5d42807abcea8b237">
+        sha1="4cb02264d6fabf9c41fd59806ecac79c0ed75f55">
         <dex dex="C:\workspace\VehicleBeacon\app\build\intermediates\transforms\dex\defaultFlavor\debug\folders\1000\10\instant-run-bootstrap_42e4f0681c50675e2126b4ac2f1fa3dea95eae36\classes.dex" />
     </item>
     <item

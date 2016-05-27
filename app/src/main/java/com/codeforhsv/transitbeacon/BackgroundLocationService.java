@@ -171,23 +171,8 @@ public class BackgroundLocationService extends Service implements
         String serverURL = "http://" + PreferenceManager.getInstance().getServerIP(btsThis);
             try {
                 mSocket = IO.socket(serverURL);
-                updateStatus("made socket.io connection...");
+                updateStatus("made socket...");
             } catch (URISyntaxException e) {}
-
-        mSocket.connect();
-        JSONObject data = new JSONObject();
-
-        try {
-            data.accumulate("id", PreferenceManager.getInstance().getTrolleyNumber(btsThis));           // get param
-            data.accumulate("pw", PreferenceManager.getInstance().getPassword(btsThis)); // get param
-        } catch (Exception e) {
-            Log.e(Constants.LOG_TAG, "JSON error. " + e);
-            e.printStackTrace();
-        }
-
-        Log.d(Constants.LOG_TAG, "emit now");
-        mSocket.emit("bus:connect", data);
-
 
         Intent intent = new Intent(this, BackgroundLocationService.class);
         mLocationPendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -210,6 +195,24 @@ public class BackgroundLocationService extends Service implements
     public int onStartCommand (Intent intent, int flags, int startId)
     {
         super.onStartCommand(intent, flags, startId);
+        // try here... ---------------------------------------
+        btsThis = this;
+        if (! mSocket.connected()) {
+            mSocket.connect();
+            updateStatus("made connection...");
+            JSONObject data = new JSONObject();
+
+            try {
+                data.accumulate("id", PreferenceManager.getInstance().getTrolleyNumber(btsThis));           // get param
+                data.accumulate("pw", PreferenceManager.getInstance().getPassword(btsThis)); // get param
+            } catch (Exception e) {
+                Log.e(Constants.LOG_TAG, "JSON error. " + e);
+                e.printStackTrace();
+            }
+            mSocket.emit("bus:connect", data);
+        }
+
+        // end test -------------------------------------------
         Log.d(Constants.LOG_TAG, "Received message...");
         if(!servicesAvailable) {
             Log.e(Constants.LOG_TAG, "Google Play Location Services not available.");
@@ -382,7 +385,7 @@ public class BackgroundLocationService extends Service implements
         protected void onPostExecute(String message) {
             super.onPostExecute(message);
             sendToClients(message);
-            updateStatus("Waiting for next location update...");
+            //updateStatus("Waiting for next location update...");
         }
     }
 }
