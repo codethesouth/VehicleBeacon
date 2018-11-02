@@ -1,8 +1,7 @@
-#Vehicle Beacon 
-originally 
-# HSV Transit Beacont from trolley-tracker-agent
+# Vehicle Beacon
+> Android app for reporting the current location of device with this application installed.
 
-Android app for reporting the current location of device with this application installed.
+## This project has been shutdown and is no longer supported by Code the South.
 
 Written by the Code for Greenville NC CfA Brigade, it has been adapted to track the Huntsville 
 Trolley and Shuttle Buses by the Code the South CfA Brigade.
